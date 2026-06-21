@@ -30,7 +30,7 @@ class Animal(Base):
 	arrived_at: Mapped[Date] = mapped_column(Date, nullable=False)
 	age: Mapped[int] = mapped_column(Integer, nullable=False)
 	breed_id: Mapped[int] = mapped_column(ForeignKey("breed.id"), nullable=False)
-	parents: Mapped[str | None] = mapped_column(String, nullable=True)
+	parent: Mapped[str | None] = mapped_column(String, nullable=True)
 
 	breed: Mapped["Breed"] = relationship(back_populates="animals")
 	weightings: Mapped[list["Weighting"]] = relationship(back_populates="animal")
