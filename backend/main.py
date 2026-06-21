@@ -1,13 +1,13 @@
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
+from sqlalchemy.orm import Session
+
+from app.database import models
+from app.database.session import Base, engine, get_db
 
 app = FastAPI()
 
+Base.metadata.create_all(bind=engine)
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: str | None = None):
-    return {"item_id": item_id, "q": q}
+@app.get("/health/db")
+def health_db(db: Session = Depends(get_db)):
+    return {"ok": db.connection().connection.is_valid}

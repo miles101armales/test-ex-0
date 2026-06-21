@@ -7,6 +7,7 @@
 - JavaScript
 	- Typescript
 	- Vue/React
+- Docker
 
 ## Функциональные требования
 
