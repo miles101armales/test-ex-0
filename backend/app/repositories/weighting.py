@@ -24,10 +24,10 @@ def create_weighting(
 	user_id: int,
 ) -> Weighting:
 	weighting = Weighting(
-		animal_inventory_number, 
-		weighted_at, 
-		weight, 
-		user_id
+		animal_inventory_number=animal_inventory_number, 
+		weighted_at=weighted_at, 
+		weight=weight, 
+		user_id=user_id
 	)
 	db.add(weighting)
 	db.commit()

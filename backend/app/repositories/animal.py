@@ -1,7 +1,7 @@
 from datetime import date
 from sqlalchemy.orm import Session
 
-from backend.app.database.models import Animal
+from app.database.models import Animal
 
 
 def create_animal(
@@ -14,12 +14,12 @@ def create_animal(
 	parent: str
 ) -> Animal:
 	animal = Animal(
-		sex,
-		nickname,
-		arrived_at,
-		age,
-		breed_id,
-		parent
+		sex=sex,
+		nickname=nickname,
+		arrived_at=arrived_at,
+		age=age,
+		breed_id=breed_id,
+		parent=parent
 	)
 	db.add(animal)
 	db.commit()

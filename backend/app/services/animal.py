@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 
-from backend.app.api.schemas.animal import AnimalCreate
-from backend.app.database.models import Animal
-from backend.app.repositories.animal import create_animal
+from app.api.schemas.animal import AnimalCreate
+from app.database.models import Animal
+from app.repositories.animal import create_animal
 
 
 def create_animal_service(

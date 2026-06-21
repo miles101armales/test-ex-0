@@ -1,13 +1,15 @@
 from sqlalchemy.orm import Session
 
-from backend.app.database.models import Animal
+from app.database.models import Animal
 
 
 def create_animal_type(
 	db: Session,
 	name: str,
 ) -> Animal:
-	animal = Animal(name)
+	animal = Animal(
+		name=name
+	)
 	db.add(animal)
 	db.commit()
 	db.refresh(animal)

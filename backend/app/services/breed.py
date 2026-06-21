@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 
-from backend.app.api.schemas.breed import BreedCreate
-from backend.app.database.models import Breed
-from backend.app.repositories.breed import create_breed
+from app.api.schemas.breed import BreedCreate
+from app.database.models import Breed
+from app.repositories.breed import create_breed
 
 
 def create_breed_service(
