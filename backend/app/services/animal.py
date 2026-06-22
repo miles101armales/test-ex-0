@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 
 from app.api.schemas.animal import AnimalCreate
 from app.database.models import Animal
-from app.repositories.animal import create_animal
+from app.repositories.animal import create_animal, list_animals
 
 
 def create_animal_service(
@@ -19,3 +19,6 @@ def create_animal_service(
 		breed_id=data.breed_id,
 		parent=data.parent
 	)
+
+def list_animals_service(db: Session) -> list[Animal]:
+	return list_animals(db)

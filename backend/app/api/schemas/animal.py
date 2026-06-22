@@ -9,7 +9,7 @@ class AnimalCreate(BaseModel):
 	arrived_at: date
 	age: int
 	breed_id: int
-	parent: str
+	parent: str | None
 
 class AnimalRead(BaseModel):
 	inventory_number: int
@@ -18,6 +18,6 @@ class AnimalRead(BaseModel):
 	arrived_at: date
 	age: int
 	breed_id: int
-	parent: int
+	parent: str | None
 
 	model_config = {"from_attributes": True}

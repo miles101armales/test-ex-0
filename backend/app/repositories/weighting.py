@@ -33,3 +33,7 @@ def create_weighting(
 	db.commit()
 	db.refresh(weighting)
 	return weighting
+
+def list_weightings(db: Session) -> list[Weighting]:
+	stmt = select(Weighting).order_by(Weighting.id)
+	return list(db.scalars(stmt).all())

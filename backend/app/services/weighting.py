@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.api.schemas.weighting import WeightingCreate
 from app.database.models import Weighting
-from app.repositories.weighting import create_weighting, weighting_exists_for_animal_on_date
+from app.repositories.weighting import create_weighting, list_weightings, weighting_exists_for_animal_on_date
 
 def create_weighting_service(
 	db: Session,
@@ -26,3 +26,6 @@ def create_weighting_service(
 		weight=data.weight,
 		user_id=user_id,
 	)
+
+def list_weightings_service(db: Session) -> list[Weighting]:
+	return list_weightings(db)

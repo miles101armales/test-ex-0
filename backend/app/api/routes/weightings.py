@@ -3,15 +3,19 @@ from sqlalchemy.orm import Session
 
 from app.api.schemas.weighting import WeightingCreate, WeightingRead
 from app.database.session import get_db
-from app.services.weighting import create_weighting_service
+from app.services.weighting import create_weighting_service, list_weightings_service
 
 
 weightings_router = APIRouter(prefix="/weightings", tags=["weightings"])
 
-@weightings_router.post("/create", response_model=WeightingRead, status_code=status.HTTP_201_CREATED)
+@weightings_router.post("/", response_model=WeightingRead, status_code=status.HTTP_201_CREATED)
 def create_weighting_endpoint(
 	data: WeightingCreate,
 	db: Session = Depends(get_db),
 ):
 	user_id = 1
 	return create_weighting_service(db, data, user_id=user_id)
+
+@weightings_router.get("/", response_model=list[WeightingRead])
+def list_weightings_endpoint(db: Session = Depends(get_db)):
+	return list_weightings_service(db)

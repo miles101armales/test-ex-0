@@ -1,4 +1,5 @@
 from datetime import date
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.database.models import Animal
@@ -6,6 +7,7 @@ from app.database.models import Animal
 
 def create_animal(
 	db: Session,
+	inventory_number,
 	sex: str,
 	nickname: str,
 	arrived_at: date,
@@ -14,6 +16,7 @@ def create_animal(
 	parent: str
 ) -> Animal:
 	animal = Animal(
+		inventory_number=inventory_number,
 		sex=sex,
 		nickname=nickname,
 		arrived_at=arrived_at,
@@ -25,3 +28,7 @@ def create_animal(
 	db.commit()
 	db.refresh(animal)
 	return animal
+
+def list_animals(db: Session) -> list[Animal]:
+	stmt = select(Animal).order_by(Animal.inventory_number)
+	return list(db.scalars(stmt).all())
