@@ -14,8 +14,8 @@ Base.metadata.create_all(bind=engine)
 
 app.include_router(animaltypes_router)
 app.include_router(breeds_router)
-app.include_router(weightings_router)
 app.include_router(animals_router)
+app.include_router(weightings_router)
 
 @app.get("/health/db")
 def health_db(db: Session = Depends(get_db)):

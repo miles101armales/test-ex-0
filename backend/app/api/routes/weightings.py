@@ -6,7 +6,7 @@ from app.database.session import get_db
 from app.services.weighting import create_weighting_service
 
 
-weightings_router = APIRouter(prefix="/weightings")
+weightings_router = APIRouter(prefix="/weightings", tags=["weightings"])
 
 @weightings_router.post("/create", response_model=WeightingRead, status_code=status.HTTP_201_CREATED)
 def create_weighting_endpoint(

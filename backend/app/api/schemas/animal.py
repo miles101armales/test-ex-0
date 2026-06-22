@@ -3,6 +3,7 @@ from pydantic import BaseModel
 
 
 class AnimalCreate(BaseModel):
+	inventory_number: int
 	sex: str
 	nickname: str
 	arrived_at: date

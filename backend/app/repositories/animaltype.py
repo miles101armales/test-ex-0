@@ -1,16 +1,16 @@
 from sqlalchemy.orm import Session
 
-from app.database.models import Animal
+from app.database.models import AnimalType
 
 
 def create_animal_type(
 	db: Session,
 	name: str,
-) -> Animal:
-	animal = Animal(
+) -> AnimalType:
+	animal_type = AnimalType(
 		name=name
 	)
-	db.add(animal)
+	db.add(animal_type)
 	db.commit()
-	db.refresh(animal)
-	return animal
+	db.refresh(animal_type)
+	return animal_type
