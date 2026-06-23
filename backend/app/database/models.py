@@ -45,9 +45,9 @@ class Weighting(Base):
 	user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
 
 	animal: Mapped["Animal"] = relationship(back_populates="weightings")
-	user: Mapped["Users"] = relationship(back_populates="weightings")
+	user: Mapped["User"] = relationship(back_populates="weightings")
 
-class Users(Base):
+class User(Base):
 	__tablename__ = "users"
 
 	id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
@@ -57,5 +57,6 @@ class Users(Base):
 	role: Mapped[str] = mapped_column(String, default="user")
 	is_active: Mapped[bool] = mapped_column(Boolean, default=False)
 	is_enabled: Mapped[bool] = mapped_column(Boolean, default=True)
+	activation_token: Mapped[str | None] = mapped_column(String, nullable=True)
 
 	weightings: Mapped[list["Weighting"]] = relationship(back_populates="user")
