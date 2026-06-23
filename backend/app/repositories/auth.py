@@ -4,12 +4,6 @@ from sqlalchemy.orm import Session
 
 from app.database.models import User
 
-def get_user_by_login(
-	db: Session,
-	login: str,
-) -> User | None:
-	return db.scalar(select(User).where(User.login == login))
-
 def exists_user_by_login_or_email(
 	db: Session,
 	login: str,

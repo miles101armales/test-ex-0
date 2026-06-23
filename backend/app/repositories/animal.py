@@ -32,3 +32,18 @@ def create_animal(
 def list_animals(db: Session) -> list[Animal]:
 	stmt = select(Animal).order_by(Animal.inventory_number)
 	return list(db.scalars(stmt).all())
+
+def get_animal_by_inventory_number(db: Session, inventory_number: int) -> Animal:
+	return db.get(Animal, inventory_number)
+
+def update_animal(db: Session, animal: Animal, **fields):
+	for key, value in fields.items():
+		if value is not None:
+			setattr(animal, key, value)
+	db.commit()
+	db.refresh(animal)
+	return animal
+
+def delete_animal(db: Session, animal: Animal) -> None:
+	db.delete(animal)
+	db.commit()

@@ -7,6 +7,11 @@ class WeightingCreate(BaseModel):
 	weighted_at: date
 	weight: int = Field(gt=0)
 
+class WeightingUpdate(BaseModel):
+	animal_inventory_number: int | None = None
+	weighted_at: date | None = None
+	weight: int | None = Field(default=None, gt=0)
+
 class WeightingRead(BaseModel):
 	id: int
 	animal_inventory_number: int

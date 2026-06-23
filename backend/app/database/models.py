@@ -3,6 +3,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .session import Base
 
+# TODO: завести Enum для role: ADMIN и USER
+
 class AnimalType(Base):
 	__tablename__ = "animaltype"
 

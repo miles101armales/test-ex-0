@@ -3,8 +3,9 @@ from sqlalchemy.orm import Session
 
 from app.api.schemas.auth import LoginRequest, LoginResponse, RegisterRequest, RegisterResponse
 from app.database.models import User
-from app.repositories.auth import activate_user_by_token, get_user_by_login, exists_user_by_login_or_email, register_user
+from app.repositories.auth import activate_user_by_token, exists_user_by_login_or_email, register_user
 from app.core.security import create_access_token, hash_password, verify_password
+from app.repositories.user import get_user_by_login
 
 
 def register_service(

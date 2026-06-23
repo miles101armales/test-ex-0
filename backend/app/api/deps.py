@@ -5,7 +5,7 @@ from jose import JWTError, jwt
 
 from app.core.security import ALGORITHM, SECRET_KEY
 from app.database.session import get_db
-from app.repositories.auth import get_user_by_login
+from app.repositories.user import get_user_by_login
 from app.database.models import User
 
 
@@ -38,5 +38,25 @@ def get_current_user(
 		raise HTTPException(
 			status_code=status.HTTP_401_UNAUTHORIZED,
 			detail="Невалидный логин"
+		)
+	if not user.is_active:
+		raise HTTPException(
+			status_code=status.HTTP_403_FORBIDDEN,
+			detail="Подтвердите email по ссылке"
+		)
+	if not user.is_enabled:
+		raise HTTPException(
+			status_code=status.HTTP_403_FORBIDDEN,
+			detail="Учетная запись отключена администратором"
+		)
+	return user
+
+def get_current_admin(
+	user: User = Depends(get_current_user)
+) -> User:
+	if user.role != "admin":
+		raise HTTPException(
+			status_code=status.HTTP_403_FORBIDDEN,
+			detail="Доступ только для администратора"
 		)
 	return user

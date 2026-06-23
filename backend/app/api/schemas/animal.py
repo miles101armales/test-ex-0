@@ -11,6 +11,14 @@ class AnimalCreate(BaseModel):
 	breed_id: int
 	parent: str | None
 
+class AnimalUpdate(BaseModel):
+	sex: str | None = None
+	nickname: str | None = None
+	arrived_at: date | None = None
+	age: int | None = None
+	breed_id: int | None = None
+	parent: str | None = None
+
 class AnimalRead(BaseModel):
 	inventory_number: int
 	sex: str
