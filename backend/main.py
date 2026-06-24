@@ -1,4 +1,5 @@
 from fastapi import Depends, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
 from app.database import models
@@ -20,6 +21,14 @@ app.include_router(animals_router)
 app.include_router(weightings_router)
 app.include_router(auth_router)
 app.include_router(users_router)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/health/db")
 def health_db(db: Session = Depends(get_db)):

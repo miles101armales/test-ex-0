@@ -32,13 +32,8 @@ def update_animal_type_service(
 	id: int, 
 	data: AnimalTypeUpdate
 ) -> AnimalType:
-	updated_animal_type = update_animal_type(db, id, data.name)
-	if updated_animal_type is None:
-		raise HTTPException(
-			status_code=status.HTTP_404_NOT_FOUND,
-			detail="Тип животного не найден"
-		)
-	return updated_animal_type
+	get_animal_type_by_id_service(db, id)
+	return update_animal_type(db, id, data.name)
 
 def delete_animal_type_service(db: Session, id: int) -> None:
 	animal_type = get_animal_type_by_id_service(db, id)
