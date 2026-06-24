@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { login } from '../api/auth';
 import { setToken } from '../auth/token';
 
@@ -8,6 +8,8 @@ export function LoginPage() {
 	const [loginValue, setLoginValue] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
+	const location = useLocation();
+	const successMessage = (location.state as { message?: string } | null)?.message;
 
 	async function handleSubmit(e: React.SubmitEvent) {
 		e.preventDefault();
@@ -23,6 +25,7 @@ export function LoginPage() {
 
 	return (
 		<form onSubmit={handleSubmit}>
+			{successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
 			<h1>Вход</h1>
 			{error && <p style={{ color: "red" }}>{error}</p>}
 			<input value={loginValue} onChange={(e) => setLoginValue(e.target.value)} placeholder="login" />

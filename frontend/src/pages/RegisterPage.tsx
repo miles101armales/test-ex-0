@@ -17,12 +17,13 @@ export function RegisterPage() {
 				login: loginValue,
 				email: emailValue,
 				password: password
-			}
-			const res = await register(data)
-
-			navigate("/login")
+			};
+			const res = await register(data);
+			navigate("/login", {
+				state: { message: res.message }
+			});
 		} catch (error) {
-			setError(error instanceof Error ? error.message : "Ошибка регистрации")
+			setError(error instanceof Error ? error.message : "Ошибка регистрации");
 		}
 	}
 
