@@ -26,7 +26,7 @@ class Breed(Base):
 class Animal(Base):
 	__tablename__ = "animal"
 
-	inventory_number: Mapped[int] = mapped_column(Integer, primary_key=True)
+	inventory_number: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
 	sex: Mapped[str] = mapped_column(String, nullable=False)
 	nickname: Mapped[str] = mapped_column(String, nullable=False)
 	arrived_at: Mapped[Date] = mapped_column(Date, nullable=False)

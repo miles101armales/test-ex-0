@@ -20,7 +20,6 @@ def create_animal_service(
 		)
 	return create_animal(
 		db,
-		inventory_number=data.inventory_number,
 		sex=data.sex,
 		nickname=data.nickname,
 		arrived_at=data.arrived_at,

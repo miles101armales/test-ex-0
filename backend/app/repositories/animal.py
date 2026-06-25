@@ -7,7 +7,6 @@ from app.database.models import Animal
 
 def create_animal(
 	db: Session,
-	inventory_number,
 	sex: str,
 	nickname: str,
 	arrived_at: date,
@@ -16,7 +15,6 @@ def create_animal(
 	parent: str
 ) -> Animal:
 	animal = Animal(
-		inventory_number=inventory_number,
 		sex=sex,
 		nickname=nickname,
 		arrived_at=arrived_at,
