@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createWeighting, type Weighting } from "../api/weightings";
+import { createWeighting } from "../api/weightings";
 import { listAnimals, type Animal } from "../api/animals";
 import { Link } from 'react-router-dom';
 
@@ -15,21 +15,21 @@ export function HomePage() {
     	listAnimals().then(setAnimals);
   	}, []);
 
-  	async function handleSubmit(e: React.FormEvent) {
+  	async function handleSubmit(e: SubmitEvent) {
     	e.preventDefault();
     	if (!animalInventoryNumber || !weightedAt || !weight) return;
     	setError("");
     	setSuccess("");
     	try {
       		await createWeighting({
-        	animal_inventory_number: animalInventoryNumber,
-        	weighted_at: weightedAt as unknown as Date,
-        	weight: weight,
-      	} as Weighting);
-      	setSuccess("Взвешивание сохранено");
-      	setAnimalInventoryNumber(null);
-      	setWeightedAt("");
-      	setWeight(null);
+				animal_inventory_number: animalInventoryNumber,
+				weighted_at: weightedAt,
+				weight: weight,
+			});
+			setSuccess("Взвешивание сохранено");
+			setAnimalInventoryNumber(null);
+			setWeightedAt("");
+			setWeight(null);
     	} catch (e) {
       		setError(e instanceof Error ? e.message : "Ошибка");
     	}

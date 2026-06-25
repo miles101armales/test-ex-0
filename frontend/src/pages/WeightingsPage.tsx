@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
 	createWeighting,
-	deleteAnimal as deleteWeighting,
+	deleteWeighting,
 	listWeightings,
 	updateWeighting,
 	type Weighting,
@@ -41,19 +41,19 @@ export function WeightingsPage() {
 		listAnimals().then(setAnimals);
 	}, []);
 
-	async function handleCreate(event: React.SubmitEvent) {
+	async function handleCreate(event: SubmitEvent) {
 		event.preventDefault();
 		if (!animalInventoryNumber ||
-		!weightedAt ||
-		!weight
+			!weightedAt ||
+			(!weight || weight == null)
 		) return;
 		setError("");
 		try {
 			await createWeighting({
 				animal_inventory_number: animalInventoryNumber,
-				weighted_at: weightedAt as unknown as Date,
+				weighted_at: weightedAt,
 				weight: weight,
-			} as Weighting);
+			});
 			setAnimalInventoryNumber(null);
 			setWeightedAt("");
 			setWeight(null);
@@ -80,13 +80,13 @@ export function WeightingsPage() {
 	async function saveEdit(id: number) {
 		if (!editAnimalInventoryNumber ||
 			!editWeightedAt ||
-			!editWeight
+			(!editWeight || editWeight == null)
 		) return;
 		setError("");
 		try {
 			await updateWeighting(id, {
 				animal_inventory_number: editAnimalInventoryNumber,
-				weighted_at: editWeightedAt as unknown as Date,
+				weighted_at: editWeightedAt,
 				weight: editWeight,
 			});
 			cancelEdit();

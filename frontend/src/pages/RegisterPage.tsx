@@ -9,7 +9,7 @@ export function RegisterPage() {
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
 
-	async function handleSubmit(event: React.SubmitEvent) {
+	async function handleSubmit(event: SubmitEvent) {
 		event.preventDefault();
 		setError("");
 		try {

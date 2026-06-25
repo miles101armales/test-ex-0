@@ -24,8 +24,14 @@ export async function api<T>(
 	}
 
 	if (!res.ok) {
-		const err = await res.json().catch(() => ({}));
-		throw new Error(err.detail ?? res.statusText);
+		const error = await res.json().catch(() => ({}));
+		const detail = error.detail;
+		const message = Array.isArray(detail)
+			? detail.map((d: { msg: string }) => d.msg).join(", ")
+			: typeof detail === "string"
+				? detail
+				: res.statusText;
+		throw new Error(message);
 	}
 
 	if (res.status === 204) return undefined as T;

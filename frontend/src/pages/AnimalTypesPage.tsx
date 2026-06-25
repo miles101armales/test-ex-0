@@ -25,7 +25,7 @@ export function AnimalTypesPage() {
 		 load();
 	}, []);
 
-	async function handleCreate(event: React.SubmitEvent) {
+	async function handleCreate(event: SubmitEvent) {
 		event.preventDefault();
 		if (!name.trim()) return;
 		setError("");

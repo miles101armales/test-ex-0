@@ -11,7 +11,7 @@ export function LoginPage() {
 	const location = useLocation();
 	const successMessage = (location.state as { message?: string } | null)?.message;
 
-	async function handleSubmit(event: React.SubmitEvent) {
+	async function handleSubmit(event: SubmitEvent) {
 		event.preventDefault();
 		setError("");
 		try {

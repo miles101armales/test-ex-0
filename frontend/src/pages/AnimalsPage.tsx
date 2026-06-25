@@ -41,12 +41,12 @@ export function AnimalsPage() {
 		listBreeds().then(setBreeds);
 	}, []);
 
-	async function handleCreate(event: React.SubmitEvent) {
+	async function handleCreate(event: SubmitEvent) {
 		event.preventDefault();
 		if (!sex.trim() ||
 		!nickname.trim() ||
 		!arrivedAt ||
-		!age ||
+		(!age || age == null) ||
 		!breedId
 		) return;
 		setError("");
@@ -57,11 +57,11 @@ export function AnimalsPage() {
 				arrived_at: arrivedAt,
 				age: age,
 				breed_id: breedId,
-				parent: parent.trim() || null
+				parent: parent?.trim() || null
 			});
-			setAge(null);
+			setSex("");
 			setNickname("");
-			setArrivedAt(null);
+			setArrivedAt("");
 			setAge(null);
 			setBreedId(null);
 			setParent("");
@@ -83,30 +83,30 @@ export function AnimalsPage() {
 
 	function cancelEdit() {
 		setEditingInventoryNumber(null);
-		setEditSex(null);
+		setEditSex("");
 		setEditNickname("");
-		setEditArrivedAt(null);
+		setEditArrivedAt("");
 		setEditAge(null);
 		setEditBreedId(null);
 		setEditParent("");
 	}
 
 	async function saveEdit(inventory_number: number) {
-		if (!sex ||
-			!nickname.trim() ||
-			!arrivedAt ||
-			!age ||
-			!breedId
+		if (!editSex ||
+			!editNickname.trim() ||
+			!editArrivedAt ||
+			(!editAge || editAge == null) ||
+			!editBreedId
 		) return;
 		setError("");
 		try {
 			await updateAnimal(inventory_number, {
-				sex: editSex,
+				sex: editSex.trim(),
 				nickname: editNickname.trim(),
 				arrived_at: editArrivedAt,
 				age: editAge,
 				breed_id: editBreedId,
-				parent: editParent.trim()
+				parent: editParent?.trim() || null
 			});
 			cancelEdit();
 			await load();
@@ -164,7 +164,7 @@ export function AnimalsPage() {
 					))}
 				</select>
 				<input
-					value={parent}
+					value={parent ?? ""}
 					onChange={(e) => setParent(e.target.value)}
 					placeholder="Информация о родителе"
 				/>
@@ -216,7 +216,7 @@ export function AnimalsPage() {
 										<input 
 											type="date"
 											value={editArrivedAt}
-											onChange={(e) => setArrivedAt(e.target.value)}
+											onChange={(e) => setEditArrivedAt(e.target.value)}
 										/>
 									): (
 										item.arrived_at
@@ -235,8 +235,8 @@ export function AnimalsPage() {
 								<td>
 									{editingInventoryNumber === item.inventory_number ? (
 										<select 
-											value={breedId ?? ""} 
-											onChange={(e) => setBreedId(Number(e.target.value))}
+											value={editBreedId ?? ""} 
+											onChange={(e) => setEditBreedId(Number(e.target.value))}
 											required
 										>
 											<option value="" disabled>Выберите породу</option>

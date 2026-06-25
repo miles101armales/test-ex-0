@@ -1,4 +1,34 @@
 # Учет веса животных
+
+## Запуск
+
+### Backend + PostgreSQL
+```bash
+cp .env.example .env
+docker compose up -d --build
+```
+API: http://localhost:8000
+Docs: http://localhost:8000/docs
+
+### Frontend
+
+```bash
+cd frontend
+cp .env.example .env   # VITE_API_URL=http://localhost:8000
+npm install
+npm run dev
+```
+
+UI: http://localhost:5173
+
+### Первый вход
+
+1. Зарегистрироваться на `/register`
+2. Ссылку активации смотреть в логах backend: `docker compose logs backend`
+3. Войти на `/login`
+4. Admin: `UPDATE users SET role = 'admin' WHERE login = "..."` 
+
+
 Техзадание №1
 
 [Личные заметки](NOTES.md)

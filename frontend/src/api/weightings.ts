@@ -1,25 +1,30 @@
 import { api } from "./client";
 
-export type Weighting = { 
+export type Weighting = {
 	id: number;
-  	animal_inventory_number: number;
-  	weighted_at: Date,
-  	weight: number,
-	user_id: number
- };
-
+	animal_inventory_number: number;
+	weighted_at: string;
+	weight: number;
+	user_id: number;
+};
+  
+export type WeightingCreate = {
+	animal_inventory_number: number;
+	weighted_at: string;
+	weight: number;
+};
+  
 export type WeightingUpdate = {
-  	animal_inventory_number?: number;
-  	weighted_at?: Date,
-  	weight?: number,
-	user_id?: number
+	animal_inventory_number?: number;
+	weighted_at?: string;
+	weight?: number;
 };
 
 export function listWeightings() {
 	return api<Weighting[]>("/weightings/");
 }
 
-export function createWeighting(data: Weighting) {
+export function createWeighting(data: WeightingCreate) {
 	return api<Weighting>("/weightings/", {
 		method: "POST",
 		body: JSON.stringify(data),
@@ -33,6 +38,6 @@ export function updateWeighting(id: number, data: WeightingUpdate) {
   	});
 }
 
-export function deleteAnimal(id: number) {
+export function deleteWeighting(id: number) {
   	return api<void>(`/weightings/${id}`, { method: "DELETE" });
 }
