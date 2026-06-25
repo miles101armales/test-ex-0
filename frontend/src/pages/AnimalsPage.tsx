@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { type FormEvent, useEffect, useState } from 'react';
 import { createAnimal, deleteAnimal, listAnimals, updateAnimal, type Animal } from '../api/animals';
 import { listBreeds, type Breed } from '../api/breeds';
+import { CrudPageLayout, DataTable, RowActions, type Column } from '../components/table';
 
 export function AnimalsPage() {
 	const [items, setItems] = useState<Animal[]>([]);
@@ -41,7 +42,7 @@ export function AnimalsPage() {
 		listBreeds().then(setBreeds);
 	}, []);
 
-	async function handleCreate(event: SubmitEvent) {
+	async function handleCreate(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 		if (!sex.trim() ||
 		!nickname.trim() ||
@@ -57,7 +58,7 @@ export function AnimalsPage() {
 				arrived_at: arrivedAt,
 				age: age,
 				breed_id: breedId,
-				parent: parent?.trim() || null
+				parent: parent?.trim() || undefined
 			});
 			setSex("");
 			setNickname("");
@@ -78,7 +79,7 @@ export function AnimalsPage() {
 		setEditArrivedAt(item.arrived_at);
 		setEditAge(item.age);
 		setEditBreedId(item.breed_id);
-		setEditParent(item.parent);
+		setEditParent(item.parent ?? null);
 	}
 
 	function cancelEdit() {
@@ -106,7 +107,7 @@ export function AnimalsPage() {
 				arrived_at: editArrivedAt,
 				age: editAge,
 				breed_id: editBreedId,
-				parent: editParent?.trim() || null
+				parent: editParent?.trim() || undefined
 			});
 			cancelEdit();
 			await load();
@@ -126,164 +127,157 @@ export function AnimalsPage() {
 		}
 	}
 
-	return (
-		<div>
-			<h1>Животные</h1>
-			{error && <p style={{ color: "red "}}>{error}</p>}
-
-			<form onSubmit={handleCreate}>
-				<input 
-					value={sex}
-					onChange={(e) => setSex(e.target.value)}
-					placeholder="Пол"
-				/>
-				<input 
-					value={nickname}
-					onChange={(e) => setNickname(e.target.value)}
-					placeholder="Кличка"
-				/>
-				<input
-					type="date"
-					value={arrivedAt}
-					onChange={(e) => setArrivedAt(e.target.value)}
-					placeholder="Дата прибытия"
-				/>
-				<input 
-					value={age}
-					onChange={(e) => setAge(Number(e.target.value))}
-					placeholder="Возраст"
-				/>
-				<select
-					value={breedId ?? ""}
-					onChange={(e) => setBreedId(Number(e.target.value))}
-					required
-				>
-					<option value="" disabled>Выберите породу</option>
-					{breeds.map((t) => (
-						<option key={t.id} value={t.id}>{t.name}</option>
-					))}
-				</select>
-				<input
-					value={parent ?? ""}
-					onChange={(e) => setParent(e.target.value)}
-					placeholder="Информация о родителе"
-				/>
-				<button type="submit">Создать</button>
-			</form>
-			
-			{loading ? (
-				<p>Загрузка...</p>
-			) : (
-				<table>
-					<thead>
-						<tr>
-							<th>Инвентарный номер</th>
-							<th>Пол</th>
-							<th>Кличка</th>
-							<th>Дата прибытия</th>
-							<th>Возраст</th>
-							<th>Порода</th>
-							<th>Информация о родителе</th>
-							<th></th>
-						</tr>
-					</thead>
-					<tbody>
-						{items.map((item) => (
-							<tr key={item.inventory_number}>
-								<td>{item.inventory_number}</td>
-								<td>
-									{editingInventoryNumber === item.inventory_number ? (
-										<input 
-											value={editSex}
-											onChange={(e) => setEditSex(e.target.value)}
-										/>
-									): (
-										item.sex
-									)}
-								</td>
-								<td>
-									{editingInventoryNumber === item.inventory_number ? (
-										<input 
-											value={editNickname}
-											onChange={(e) => setEditNickname(e.target.value)}
-										/>
-									): (
-										item.nickname
-									)}
-								</td>
-								<td>
-									{editingInventoryNumber === item.inventory_number ? (
-										<input 
-											type="date"
-											value={editArrivedAt}
-											onChange={(e) => setEditArrivedAt(e.target.value)}
-										/>
-									): (
-										item.arrived_at
-									)}
-								</td>
-								<td>
-									{editingInventoryNumber === item.inventory_number ? (
-										<input 
-											value={editAge}
-											onChange={(e) => setEditAge(Number(e.target.value))}
-										/>
-									): (
-										item.age
-									)}
-								</td>
-								<td>
-									{editingInventoryNumber === item.inventory_number ? (
-										<select 
-											value={editBreedId ?? ""} 
-											onChange={(e) => setEditBreedId(Number(e.target.value))}
-											required
-										>
-											<option value="" disabled>Выберите породу</option>
-											{breeds.map((t) => (
-												<option key={t.id} value={t.id}>{t.name}</option>
-											))}
-										</select>
-									) : (
-										item.breed_id
-									)}
-								</td>
-								<td>
-									{editingInventoryNumber === item.inventory_number ? (
-										<input 
-											value={editParent ?? ""}
-											onChange={(e) => setEditParent(e.target.value)}
-										/>
-									): (
-										item.parent
-									)}
-								</td>
-								<td>
-									{editingInventoryNumber === item.inventory_number ? (
-										<>
-											<button type="button" onClick={() => saveEdit(item.inventory_number)}>
-												Сохранить
-											</button>
-											<button type="button" onClick={cancelEdit}>
-												Отмена
-											</button>
-										</>
-									) : (
-										<>
-											<button type="button" onClick={() => startEdit(item)}>
-												Изменить
-											</button>
-											<button type="button" onClick={() => handleDelete(item.inventory_number)}>
-												Удалить
-											</button>
-										</>
-									)}
-								</td>
-							</tr>
+	const columns: Column<Animal>[] = [
+		{ id: 'inventory_number', header: 'Инвентарный номер', cell: (item) => item.inventory_number },
+		{
+			id: 'sex',
+			header: 'Пол',
+			cell: (item, { isEditing }) =>
+				isEditing ? (
+					<input
+						value={editSex}
+						onChange={(e) => setEditSex(e.target.value)}
+					/>
+				) : (
+					item.sex
+				),
+		},
+		{
+			id: 'nickname',
+			header: 'Кличка',
+			cell: (item, { isEditing }) =>
+				isEditing ? (
+					<input
+						value={editNickname}
+						onChange={(e) => setEditNickname(e.target.value)}
+					/>
+				) : (
+					item.nickname
+				),
+		},
+		{
+			id: 'arrived_at',
+			header: 'Дата прибытия',
+			cell: (item, { isEditing }) =>
+				isEditing ? (
+					<input
+						type="date"
+						value={editArrivedAt}
+						onChange={(e) => setEditArrivedAt(e.target.value)}
+					/>
+				) : (
+					item.arrived_at
+				),
+		},
+		{
+			id: 'age',
+			header: 'Возраст',
+			cell: (item, { isEditing }) =>
+				isEditing ? (
+					<input
+						value={editAge ?? ""}
+						onChange={(e) => setEditAge(Number(e.target.value))}
+					/>
+				) : (
+					item.age
+				),
+		},
+		{
+			id: 'breed_id',
+			header: 'Порода',
+			cell: (item, { isEditing }) =>
+				isEditing ? (
+					<select
+						value={editBreedId ?? ""}
+						onChange={(e) => setEditBreedId(Number(e.target.value))}
+						required
+					>
+						<option value="" disabled>Выберите породу</option>
+						{breeds.map((t) => (
+							<option key={t.id} value={t.id}>{t.name}</option>
 						))}
-					</tbody>
-				</table>
-			)}
-		</div>
+					</select>
+				) : (
+					item.breed_id
+				),
+		},
+		{
+			id: 'parent',
+			header: 'Информация о родителе',
+			cell: (item, { isEditing }) =>
+				isEditing ? (
+					<input
+						value={editParent ?? ""}
+						onChange={(e) => setEditParent(e.target.value)}
+					/>
+				) : (
+					item.parent
+				),
+		},
+	];
+
+	return (
+		<CrudPageLayout
+			title="Животные"
+			error={error}
+			form={
+				<form onSubmit={handleCreate}>
+					<input
+						value={sex}
+						onChange={(e) => setSex(e.target.value)}
+						placeholder="Пол"
+					/>
+					<input
+						value={nickname}
+						onChange={(e) => setNickname(e.target.value)}
+						placeholder="Кличка"
+					/>
+					<input
+						type="date"
+						value={arrivedAt}
+						onChange={(e) => setArrivedAt(e.target.value)}
+						placeholder="Дата прибытия"
+					/>
+					<input
+						value={age ?? ""}
+						onChange={(e) => setAge(Number(e.target.value))}
+						placeholder="Возраст"
+					/>
+					<select
+						value={breedId ?? ""}
+						onChange={(e) => setBreedId(Number(e.target.value))}
+						required
+					>
+						<option value="" disabled>Выберите породу</option>
+						{breeds.map((t) => (
+							<option key={t.id} value={t.id}>{t.name}</option>
+						))}
+					</select>
+					<input
+						value={parent ?? ""}
+						onChange={(e) => setParent(e.target.value)}
+						placeholder="Информация о родителе"
+					/>
+					<button type="submit">Создать</button>
+				</form>
+			}
+		>
+			<DataTable
+				loading={loading}
+				data={items}
+				columns={columns}
+				getRowKey={(item) => item.inventory_number}
+				isEditing={(item) => editingInventoryNumber === item.inventory_number}
+				actions={(item, { isEditing }) => (
+					<RowActions
+						isEditing={isEditing}
+						onEdit={() => startEdit(item)}
+						onDelete={() => handleDelete(item.inventory_number)}
+						onSave={() => saveEdit(item.inventory_number)}
+						onCancel={cancelEdit}
+					/>
+				)}
+			/>
+		</CrudPageLayout>
 	)
 }

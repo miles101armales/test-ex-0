@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { listUsers, setUserEnabled, type User } from "../api/users";
+import { CrudPageLayout, DataTable, type Column } from "../components/table";
 
 export function UsersPage() {
 	const [items, setItems] = useState<User[]>([]);
@@ -32,45 +33,32 @@ export function UsersPage() {
 		}
 	}
 
-	return (
-		<div>
-		<h1>Пользователи</h1>
-		{error && <p style={{ color: "red" }}>{error}</p>}
+	const columns: Column<User>[] = [
+		{ id: 'id', header: 'ID', cell: (user) => user.id },
+		{ id: 'login', header: 'Login', cell: (user) => user.login },
+		{ id: 'email', header: 'Email', cell: (user) => user.email },
+		{ id: 'role', header: 'Роль', cell: (user) => user.role },
+		{ id: 'is_active', header: 'Активен', cell: (user) => (user.is_active ? "да" : "нет") },
+		{ id: 'is_enabled', header: 'Включён', cell: (user) => (user.is_enabled ? "да" : "нет") },
+	];
 
-		{loading ? (
-			<p>Загрузка...</p>
-		) : (
-			<table>
-			<thead>
-				<tr>
-				<th>ID</th>
-				<th>Login</th>
-				<th>Email</th>
-				<th>Роль</th>
-				<th>Активен</th>
-				<th>Включён</th>
-				<th></th>
-				</tr>
-			</thead>
-			<tbody>
-				{items.map((user) => (
-				<tr key={user.id}>
-					<td>{user.id}</td>
-					<td>{user.login}</td>
-					<td>{user.email}</td>
-					<td>{user.role}</td>
-					<td>{user.is_active ? "да" : "нет"}</td>
-					<td>{user.is_enabled ? "да" : "нет"}</td>
-					<td>
-					<button type="button" onClick={() => toggleEnabled(user)}>
+	return (
+		<CrudPageLayout title="Пользователи" error={error}>
+			<DataTable
+				loading={loading}
+				data={items}
+				columns={columns}
+				getRowKey={(user) => user.id}
+				actions={(user) => (
+					<button
+						type="button"
+						className="rounded-md bg-gray-100 px-2 py-1 text-sm hover:bg-gray-200"
+						onClick={() => toggleEnabled(user)}
+					>
 						{user.is_enabled ? "Отключить" : "Включить"}
 					</button>
-					</td>
-				</tr>
-				))}
-			</tbody>
-			</table>
-		)}
-		</div>
+				)}
+			/>
+		</CrudPageLayout>
 	);
 }

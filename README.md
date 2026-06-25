@@ -26,7 +26,7 @@ UI: http://localhost:5173
 1. Зарегистрироваться на `/register`
 2. Ссылку активации смотреть в логах backend: `docker compose logs backend`
 3. Войти на `/login`
-4. Admin: `UPDATE users SET role = 'admin' WHERE login = "..."` 
+4. Admin: `UPDATE users SET role = 'admin' WHERE login = 'admin';` 
 
 
 Техзадание №1

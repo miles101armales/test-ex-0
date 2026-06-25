@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { type FormEvent, useEffect, useState } from 'react';
 import {
 	createWeighting,
 	deleteWeighting,
@@ -7,6 +7,7 @@ import {
 	type Weighting,
 } from '../api/weightings';
 import { listAnimals, type Animal } from '../api/animals';
+import { CrudPageLayout, DataTable, RowActions, type Column } from '../components/table';
 
 export function WeightingsPage() {
 	const [items, setItems] = useState<Weighting[]>([]);
@@ -41,7 +42,7 @@ export function WeightingsPage() {
 		listAnimals().then(setAnimals);
 	}, []);
 
-	async function handleCreate(event: SubmitEvent) {
+	async function handleCreate(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 		if (!animalInventoryNumber ||
 			!weightedAt ||
@@ -107,124 +108,110 @@ export function WeightingsPage() {
 		}
 	}
 
-	return (
-		<div>
-			<h1>Взвешивания</h1>
-			{error && <p style={{ color: "red "}}>{error}</p>}
-
-			<form onSubmit={handleCreate}>
-				<select
-					value={animalInventoryNumber ?? ""}
-					onChange={(e) => setAnimalInventoryNumber(Number(e.target.value))}
-					required
-				>
-					<option value="" disabled>Выберите животное</option>
-					{animals.map((a) => (
-						<option key={a.inventory_number} value={a.inventory_number}>
-							{a.inventory_number} — {a.nickname}
-						</option>
-					))}
-				</select>
-				<input
-					type="date"
-					value={weightedAt}
-					onChange={(e) => setWeightedAt(e.target.value)}
-					placeholder="Дата взвешивания"
-				/>
-				<input
-					type="number"
-					value={weight ?? ""}
-					onChange={(e) => setWeight(Number(e.target.value))}
-					placeholder="Вес, кг"
-				/>
-				<button type="submit">Создать</button>
-			</form>
-
-			{loading ? (
-				<p>Загрузка...</p>
-			) : (
-				<table>
-					<thead>
-						<tr>
-							<th>ID</th>
-							<th>Животное</th>
-							<th>Дата</th>
-							<th>Вес, кг</th>
-							<th>Пользователь</th>
-							<th></th>
-						</tr>
-					</thead>
-					<tbody>
-						{items.map((item) => (
-							<tr key={item.id}>
-								<td>{item.id}</td>
-								<td>
-									{editingId === item.id ? (
-										<select
-											value={editAnimalInventoryNumber ?? ""}
-											onChange={(e) => setEditAnimalInventoryNumber(Number(e.target.value))}
-											required
-										>
-											<option value="" disabled>Выберите животное</option>
-											{animals.map((a) => (
-												<option key={a.inventory_number} value={a.inventory_number}>
-													{a.inventory_number} — {a.nickname}
-												</option>
-											))}
-										</select>
-									): (
-										item.animal_inventory_number
-									)}
-								</td>
-								<td>
-									{editingId === item.id ? (
-										<input
-											type="date"
-											value={editWeightedAt}
-											onChange={(e) => setEditWeightedAt(e.target.value)}
-										/>
-									): (
-										String(item.weighted_at).slice(0, 10)
-									)}
-								</td>
-								<td>
-									{editingId === item.id ? (
-										<input
-											type="number"
-											value={editWeight ?? ""}
-											onChange={(e) => setEditWeight(Number(e.target.value))}
-										/>
-									): (
-										item.weight
-									)}
-								</td>
-								<td>{item.user_id}</td>
-								<td>
-									{editingId === item.id ? (
-										<>
-											<button type="button" onClick={() => saveEdit(item.id)}>
-												Сохранить
-											</button>
-											<button type="button" onClick={cancelEdit}>
-												Отмена
-											</button>
-										</>
-									) : (
-										<>
-											<button type="button" onClick={() => startEdit(item)}>
-												Изменить
-											</button>
-											<button type="button" onClick={() => handleDelete(item.id)}>
-												Удалить
-											</button>
-										</>
-									)}
-								</td>
-							</tr>
+	const columns: Column<Weighting>[] = [
+		{ id: 'id', header: 'ID', cell: (item) => item.id },
+		{
+			id: 'animal',
+			header: 'Животное',
+			cell: (item, { isEditing }) =>
+				isEditing ? (
+					<select
+						value={editAnimalInventoryNumber ?? ""}
+						onChange={(e) => setEditAnimalInventoryNumber(Number(e.target.value))}
+						required
+					>
+						<option value="" disabled>Выберите животное</option>
+						{animals.map((a) => (
+							<option key={a.inventory_number} value={a.inventory_number}>
+								{a.inventory_number} — {a.nickname}
+							</option>
 						))}
-					</tbody>
-				</table>
-			)}
-		</div>
+					</select>
+				) : (
+					item.animal_inventory_number
+				),
+		},
+		{
+			id: 'weighted_at',
+			header: 'Дата',
+			cell: (item, { isEditing }) =>
+				isEditing ? (
+					<input
+						type="date"
+						value={editWeightedAt}
+						onChange={(e) => setEditWeightedAt(e.target.value)}
+					/>
+				) : (
+					String(item.weighted_at).slice(0, 10)
+				),
+		},
+		{
+			id: 'weight',
+			header: 'Вес, кг',
+			cell: (item, { isEditing }) =>
+				isEditing ? (
+					<input
+						type="number"
+						value={editWeight ?? ""}
+						onChange={(e) => setEditWeight(Number(e.target.value))}
+					/>
+				) : (
+					item.weight
+				),
+		},
+		{ id: 'user_id', header: 'Пользователь', cell: (item) => item.user_id },
+	];
+
+	return (
+		<CrudPageLayout
+			title="Взвешивания"
+			error={error}
+			form={
+				<form onSubmit={handleCreate}>
+					<select
+						value={animalInventoryNumber ?? ""}
+						onChange={(e) => setAnimalInventoryNumber(Number(e.target.value))}
+						required
+					>
+						<option value="" disabled>Выберите животное</option>
+						{animals.map((a) => (
+							<option key={a.inventory_number} value={a.inventory_number}>
+								{a.inventory_number} — {a.nickname}
+							</option>
+						))}
+					</select>
+					<input
+						type="date"
+						value={weightedAt}
+						onChange={(e) => setWeightedAt(e.target.value)}
+						placeholder="Дата взвешивания"
+					/>
+					<input
+						type="number"
+						value={weight ?? ""}
+						onChange={(e) => setWeight(Number(e.target.value))}
+						placeholder="Вес, кг"
+					/>
+					<button type="submit">Создать</button>
+				</form>
+			}
+		>
+			<DataTable
+				loading={loading}
+				data={items}
+				columns={columns}
+				getRowKey={(item) => item.id}
+				isEditing={(item) => editingId === item.id}
+				actions={(item, { isEditing }) => (
+					<RowActions
+						isEditing={isEditing}
+						onEdit={() => startEdit(item)}
+						onDelete={() => handleDelete(item.id)}
+						onSave={() => saveEdit(item.id)}
+						onCancel={cancelEdit}
+					/>
+				)}
+			/>
+		</CrudPageLayout>
 	)
 }

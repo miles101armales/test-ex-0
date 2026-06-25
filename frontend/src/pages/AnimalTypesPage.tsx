@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { type FormEvent, useEffect, useState } from 'react';
 import { createAnimalType, deleteAnimalType, listAnimalTypes, updateAnimalType, type AnimalType } from '../api/animalTypes';
+import { CrudPageLayout, DataTable, RowActions, type Column } from '../components/table';
 
 export function AnimalTypesPage() {
 	const [items, setItems] = useState<AnimalType[]>([]);
@@ -25,7 +26,7 @@ export function AnimalTypesPage() {
 		 load();
 	}, []);
 
-	async function handleCreate(event: SubmitEvent) {
+	async function handleCreate(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 		if (!name.trim()) return;
 		setError("");
@@ -71,71 +72,54 @@ export function AnimalTypesPage() {
 		}
 	}
 
-	return (
-		<div>
-			<h1>Типы животных</h1>
-			{error && <p style={{ color: "red "}}>{error}</p>}
+	const columns: Column<AnimalType>[] = [
+		{ id: 'id', header: 'ID', cell: (item) => item.id },
+		{
+			id: 'name',
+			header: 'Название',
+			cell: (item, { isEditing }) =>
+				isEditing ? (
+					<input
+						value={editName}
+						onChange={(e) => setEditName(e.target.value)}
+					/>
+				) : (
+					item.name
+				),
+		},
+	];
 
-			<form onSubmit={handleCreate}>
-				<input 
-					value={name}
-					onChange={(e) => setName(e.target.value)}
-					placeholder="Название"
-				/>
-				<button type="submit">Создать</button>
-			</form>
-			
-			{loading ? (
-				<p>Загрузка...</p>
-			) : (
-				<table>
-					<thead>
-						<tr>
-							<th>ID</th>
-							<th>Название</th>
-							<th></th>
-						</tr>
-					</thead>
-					<tbody>
-						{items.map((item) => (
-							<tr key={item.id}>
-								<td>{item.id}</td>
-								<td>
-									{editingId === item.id ? (
-										<input 
-											value={editName}
-											onChange={(e) => setEditName(e.target.value)}
-										/>
-									): (
-										item.name
-									)}
-								</td>
-								<td>
-									{editingId === item.id ? (
-										<>
-											<button type="button" onClick={() => saveEdit(item.id)}>
-												Сохранить
-											</button>
-											<button type="button" onClick={cancelEdit}>
-												Отмена
-											</button>
-										</>
-									) : (
-										<>
-											<button type="button" onClick={() => startEdit(item)}>
-												Изменить
-											</button>
-											<button type="button" onClick={() => handleDelete(item.id)}>
-												Удалить
-											</button>
-										</>
-									)}
-								</td>
-							</tr>
-						))}
-					</tbody>
-				</table>
-			)}
-		</div>
+	return (
+		<CrudPageLayout
+			title="Типы животных"
+			error={error}
+			form={
+				<form onSubmit={handleCreate}>
+					<input
+						value={name}
+						onChange={(e) => setName(e.target.value)}
+						placeholder="Название"
+					/>
+					<button type="submit">Создать</button>
+				</form>
+			}
+		>
+			<DataTable
+				loading={loading}
+				data={items}
+				columns={columns}
+				getRowKey={(item) => item.id}
+				isEditing={(item) => editingId === item.id}
+				actions={(item, { isEditing }) => (
+					<RowActions
+						isEditing={isEditing}
+						onEdit={() => startEdit(item)}
+						onDelete={() => handleDelete(item.id)}
+						onSave={() => saveEdit(item.id)}
+						onCancel={cancelEdit}
+					/>
+				)}
+			/>
+		</CrudPageLayout>
 	)
 }

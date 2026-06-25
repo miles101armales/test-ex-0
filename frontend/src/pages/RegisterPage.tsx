@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { type FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { register } from '../api/auth';
 
@@ -9,7 +9,7 @@ export function RegisterPage() {
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
 
-	async function handleSubmit(event: SubmitEvent) {
+	async function handleSubmit(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 		setError("");
 		try {

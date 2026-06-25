@@ -10,6 +10,12 @@ import { AnimalsPage } from './pages/AnimalsPage';
 import { WeightingsPage } from './pages/WeightingsPage';
 import { UsersPage } from './pages/UsersPage';
 
+export const inputClass =
+"w-full rounded-md border border-gray-300 p-6 px-3 py-2 text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20";
+
+export const btnPrimary =
+"rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90";
+
 export default function App() {
   return (
     <BrowserRouter>

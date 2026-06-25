@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { type FormEvent, useEffect, useState } from 'react';
 import { createBreed, deleteBreed, listBreeds, updateBreed, type Breed } from '../api/breeds';
 import { type AnimalType, listAnimalTypes } from '../api/animalTypes';
+import { CrudPageLayout, DataTable, RowActions, type Column } from '../components/table';
 
 export function BreedsPage() {
 	const [items, setItems] = useState<Breed[]>([]);
@@ -33,7 +34,7 @@ export function BreedsPage() {
 		listAnimalTypes().then(setAnimalTypes);
 	}, []);
 
-	async function handleCreate(event: SubmitEvent) {
+	async function handleCreate(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 		if (!name.trim()) return;
 		if (!animalTypeId) return;
@@ -90,98 +91,83 @@ export function BreedsPage() {
 		}
 	}
 
-	return (
-		<div>
-			<h1>Породы</h1>
-			{error && <p style={{ color: "red "}}>{error}</p>}
-
-			<form onSubmit={handleCreate}>
-				<input 
-					value={name}
-					onChange={(e) => setName(e.target.value)}
-					placeholder="Название"
-				/>
-				<select
-					value={animalTypeId ?? ""}
-					onChange={(e) => setAnimalTypeId(Number(e.target.value))}
-					required
-				>
-					<option value="" disabled>Выберите тип</option>
-					{animalTypes.map((t) => (
-						<option key={t.id} value={t.id}>{t.name}</option>
-					))}
-				</select>
-				<button type="submit">Создать</button>
-			</form>
-			
-			{loading ? (
-				<p>Загрузка...</p>
-			) : (
-				<table>
-					<thead>
-						<tr>
-							<th>ID</th>
-							<th>Название</th>
-							<th>Тип животного</th>
-							<th></th>
-						</tr>
-					</thead>
-					<tbody>
-						{items.map((item) => (
-							<tr key={item.id}>
-								<td>{item.id}</td>
-								<td>
-									{editingId === item.id ? (
-										<input 
-											value={editName}
-											onChange={(e) => setEditName(e.target.value)}
-										/>
-									): (
-										item.name
-									)}
-								</td>
-								<td>
-									{editingId === item.id ? (
-										<select 
-											value={animalTypeId ?? ""} 
-											onChange={(e) => setAnimalTypeId(Number(e.target.value))}
-											required
-										>
-											<option value="" disabled>Выберите тип</option>
-											{animalTypes.map((t) => (
-												<option key={t.id} value={t.id}>{t.name}</option>
-											))}
-										</select>
-									) : (
-										item.animaltype_id
-									)}
-								</td>
-								<td>
-									{editingId === item.id ? (
-										<>
-											<button type="button" onClick={() => saveEdit(item.id)}>
-												Сохранить
-											</button>
-											<button type="button" onClick={cancelEdit}>
-												Отмена
-											</button>
-										</>
-									) : (
-										<>
-											<button type="button" onClick={() => startEdit(item)}>
-												Изменить
-											</button>
-											<button type="button" onClick={() => handleDelete(item.id)}>
-												Удалить
-											</button>
-										</>
-									)}
-								</td>
-							</tr>
+	const columns: Column<Breed>[] = [
+		{ id: 'id', header: 'ID', cell: (item) => item.id },
+		{
+			id: 'name',
+			header: 'Название',
+			cell: (item, { isEditing }) =>
+				isEditing ? (
+					<input
+						value={editName}
+						onChange={(e) => setEditName(e.target.value)}
+					/>
+				) : (
+					item.name
+				),
+		},
+		{
+			id: 'animaltype_id',
+			header: 'Тип животного',
+			cell: (item, { isEditing }) =>
+				isEditing ? (
+					<select
+						value={editAnimalTypeId ?? ""}
+						onChange={(e) => setEditAnimalTypeId(Number(e.target.value))}
+						required
+					>
+						<option value="" disabled>Выберите тип</option>
+						{animalTypes.map((t) => (
+							<option key={t.id} value={t.id}>{t.name}</option>
 						))}
-					</tbody>
-				</table>
-			)}
-		</div>
+					</select>
+				) : (
+					item.animaltype_id
+				),
+		},
+	];
+
+	return (
+		<CrudPageLayout
+			title="Породы"
+			error={error}
+			form={
+				<form onSubmit={handleCreate}>
+					<input
+						value={name}
+						onChange={(e) => setName(e.target.value)}
+						placeholder="Название"
+					/>
+					<select
+						value={animalTypeId ?? ""}
+						onChange={(e) => setAnimalTypeId(Number(e.target.value))}
+						required
+					>
+						<option value="" disabled>Выберите тип</option>
+						{animalTypes.map((t) => (
+							<option key={t.id} value={t.id}>{t.name}</option>
+						))}
+					</select>
+					<button type="submit">Создать</button>
+				</form>
+			}
+		>
+			<DataTable
+				loading={loading}
+				data={items}
+				columns={columns}
+				getRowKey={(item) => item.id}
+				isEditing={(item) => editingId === item.id}
+				actions={(item, { isEditing }) => (
+					<RowActions
+						isEditing={isEditing}
+						onEdit={() => startEdit(item)}
+						onDelete={() => handleDelete(item.id)}
+						onSave={() => saveEdit(item.id)}
+						onCancel={cancelEdit}
+					/>
+				)}
+			/>
+		</CrudPageLayout>
 	)
 }

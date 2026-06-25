@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { type FormEvent, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { login } from '../api/auth';
 import { setToken } from '../auth/token';
@@ -11,7 +11,7 @@ export function LoginPage() {
 	const location = useLocation();
 	const successMessage = (location.state as { message?: string } | null)?.message;
 
-	async function handleSubmit(event: SubmitEvent) {
+	async function handleSubmit(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 		setError("");
 		try {
