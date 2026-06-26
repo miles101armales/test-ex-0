@@ -1,6 +1,6 @@
 import { type FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { btnPrimary, inputClass } from '../App';
+import { btnPrimary, formClass, inputClass } from '../App';
 import { register } from '../api/auth';
 
 export function RegisterPage() {
@@ -29,7 +29,7 @@ export function RegisterPage() {
 	}
 
 	return (
-		<form onSubmit={handleSubmit}>
+		<form onSubmit={handleSubmit} className={formClass}>
 			<h1>Регистрация</h1>
 			{error && <p style={{ color: "red" }}>{error}</p>}
 			<input value={loginValue} onChange={(e) => setLoginValue(e.target.value)} className={inputClass} placeholder="login" />

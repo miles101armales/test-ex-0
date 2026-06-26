@@ -16,6 +16,8 @@ export const inputClass =
 export const btnPrimary =
 "rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90";
 
+export const formClass = "mb-6 flex flex-col gap-3";
+
 export default function App() {
   return (
     <BrowserRouter>

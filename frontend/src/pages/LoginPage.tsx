@@ -1,7 +1,7 @@
 import { type FormEvent, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { login } from '../api/auth';
-import { btnPrimary, inputClass } from '../App';
+import { btnPrimary, formClass, inputClass } from '../App';
 import { setToken } from '../auth/token';
 
 export function LoginPage() {
@@ -25,7 +25,7 @@ export function LoginPage() {
 	}
 
 	return (
-		<form onSubmit={handleSubmit}>
+		<form onSubmit={handleSubmit} className={formClass}>
 			{successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
 			<h1>Вход</h1>
 			{error && <p style={{ color: "red" }}>{error}</p>}

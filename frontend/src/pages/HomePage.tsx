@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { createWeighting } from "../api/weightings";
 import { listAnimals, type Animal } from "../api/animals";
 import { Link } from 'react-router-dom';
-import { btnPrimary, inputClass } from '../App';
+import { btnPrimary, formClass, inputClass } from '../App';
 
 export function HomePage() {
   	const [animals, setAnimals] = useState<Animal[]>([]);
@@ -41,7 +41,7 @@ export function HomePage() {
 			<h1>Новое взвешивание</h1>
 			{error && <p className="mb-4 text-sm text-red-600">{error}</p>}
 			{success && <p className="mb-4 text-sm text-green-600">{success}</p>}
-			<form onSubmit={handleSubmit}>
+			<form onSubmit={handleSubmit} className={formClass}>
 				<select
 					value={animalInventoryNumber ?? ""}
 					onChange={(e) => setAnimalInventoryNumber(Number(e.target.value))}

@@ -7,12 +7,16 @@ import {
 	type Weighting,
 } from '../api/weightings';
 import { listAnimals, type Animal } from '../api/animals';
-import { btnPrimary, inputClass } from '../App';
+import { getMe } from '../api/auth';
+import { listUsers, type User } from '../api/users';
+import { btnPrimary, formClass, inputClass } from '../App';
 import { CrudPageLayout, DataTable, RowActions, type Column } from '../components/table';
 
 export function WeightingsPage() {
 	const [items, setItems] = useState<Weighting[]>([]);
 	const [animals, setAnimals] = useState<Animal[]>([]);
+	const [users, setUsers] = useState<User[]>([]);
+	const [currentLogin, setCurrentLogin] = useState("");
 	const [animalInventoryNumber, setAnimalInventoryNumber] = useState<number | null>(null);
 	const [weightedAt, setWeightedAt] = useState("");
 	const [weight, setWeight] = useState<number | null>(null);
@@ -42,6 +46,29 @@ export function WeightingsPage() {
 	useEffect(() => {
 		listAnimals().then(setAnimals);
 	}, []);
+
+	useEffect(() => {
+		getMe().then((me) => {
+			setCurrentLogin(me.login);
+			if (me.role === "ADMIN") {
+				listUsers().then(setUsers);
+			}
+		});
+	}, []);
+
+	function animalLabel(inventoryNumber: number) {
+		const animal = animals.find((a) => a.inventory_number === inventoryNumber);
+		return animal ? `${animal.inventory_number} — ${animal.nickname}` : String(inventoryNumber);
+	}
+
+	const userLoginById = new Map(users.map((user) => [user.id, user.login]));
+
+	function userLabel(userId: number) {
+		const login = userLoginById.get(userId);
+		if (login) return login;
+		if (currentLogin) return currentLogin;
+		return String(userId);
+	}
 
 	async function handleCreate(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
@@ -130,7 +157,7 @@ export function WeightingsPage() {
 						))}
 					</select>
 				) : (
-					item.animal_inventory_number
+					animalLabel(item.animal_inventory_number)
 				),
 		},
 		{
@@ -163,7 +190,7 @@ export function WeightingsPage() {
 					item.weight
 				),
 		},
-		{ id: 'user_id', header: 'Пользователь', cell: (item) => item.user_id },
+		{ id: 'user_id', header: 'Пользователь', cell: (item) => userLabel(item.user_id) },
 	];
 
 	return (
@@ -171,7 +198,7 @@ export function WeightingsPage() {
 			title="Взвешивания"
 			error={error}
 			form={
-				<form onSubmit={handleCreate}>
+				<form onSubmit={handleCreate} className={formClass}>
 					<select
 						value={animalInventoryNumber ?? ""}
 						onChange={(e) => setAnimalInventoryNumber(Number(e.target.value))}

@@ -1,6 +1,6 @@
 import { type FormEvent, useEffect, useState } from 'react';
 import { createAnimalType, deleteAnimalType, listAnimalTypes, updateAnimalType, type AnimalType } from '../api/animalTypes';
-import { btnPrimary, inputClass } from '../App';
+import { btnPrimary, formClass, inputClass } from '../App';
 import { CrudPageLayout, DataTable, RowActions, type Column } from '../components/table';
 
 export function AnimalTypesPage() {
@@ -96,7 +96,7 @@ export function AnimalTypesPage() {
 			title="Типы животных"
 			error={error}
 			form={
-				<form onSubmit={handleCreate}>
+				<form onSubmit={handleCreate} className={formClass}>
 					<input
 						value={name}
 						onChange={(e) => setName(e.target.value)}

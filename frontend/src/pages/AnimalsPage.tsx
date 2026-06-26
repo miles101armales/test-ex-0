@@ -1,7 +1,7 @@
 import { type FormEvent, useEffect, useState } from 'react';
 import { createAnimal, deleteAnimal, listAnimals, updateAnimal, type Animal, type Sex } from '../api/animals';
 import { listBreeds, type Breed } from '../api/breeds';
-import { btnPrimary, inputClass } from '../App';
+import { btnPrimary, formClass, inputClass } from '../App';
 import { CrudPageLayout, DataTable, RowActions, type Column } from '../components/table';
 
 const sexOptions: { value: Sex; label: string }[] = [
@@ -138,6 +138,8 @@ export function AnimalsPage() {
 		}
 	}
 
+	const breedNameById = new Map(breeds.map((breed) => [breed.id, breed.name]));
+
 	const columns: Column<Animal>[] = [
 		{ id: 'inventory_number', header: 'Инвентарный номер', cell: (item) => item.inventory_number },
 		{
@@ -220,7 +222,7 @@ export function AnimalsPage() {
 						))}
 					</select>
 				) : (
-					item.breed_id
+					breedNameById.get(item.breed_id) ?? item.breed_id
 				),
 		},
 		{
@@ -244,7 +246,7 @@ export function AnimalsPage() {
 			title="Животные"
 			error={error}
 			form={
-				<form onSubmit={handleCreate}>
+				<form onSubmit={handleCreate} className={formClass}>
 					<select
 						value={sex ?? ""}
 						onChange={(e) => setSex(e.target.value as Sex)}
