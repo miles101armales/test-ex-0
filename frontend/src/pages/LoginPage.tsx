@@ -1,6 +1,7 @@
 import { type FormEvent, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { login } from '../api/auth';
+import { btnPrimary, inputClass } from '../App';
 import { setToken } from '../auth/token';
 
 export function LoginPage() {
@@ -28,9 +29,9 @@ export function LoginPage() {
 			{successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
 			<h1>Вход</h1>
 			{error && <p style={{ color: "red" }}>{error}</p>}
-			<input value={loginValue} onChange={(e) => setLoginValue(e.target.value)} placeholder="login" />
-      		<input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-      		<button type="submit">Войти</button>
+			<input value={loginValue} onChange={(e) => setLoginValue(e.target.value)} className={inputClass} placeholder="login" />
+      		<input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className={inputClass} />
+      		<button type="submit" className={btnPrimary}>Войти</button>
 			<Link to="/register">Регистрация</Link>
 		</form>
 	)

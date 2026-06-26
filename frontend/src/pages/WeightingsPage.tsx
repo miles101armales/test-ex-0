@@ -7,6 +7,7 @@ import {
 	type Weighting,
 } from '../api/weightings';
 import { listAnimals, type Animal } from '../api/animals';
+import { btnPrimary, inputClass } from '../App';
 import { CrudPageLayout, DataTable, RowActions, type Column } from '../components/table';
 
 export function WeightingsPage() {
@@ -118,6 +119,7 @@ export function WeightingsPage() {
 					<select
 						value={editAnimalInventoryNumber ?? ""}
 						onChange={(e) => setEditAnimalInventoryNumber(Number(e.target.value))}
+						className={inputClass}
 						required
 					>
 						<option value="" disabled>Выберите животное</option>
@@ -140,6 +142,7 @@ export function WeightingsPage() {
 						type="date"
 						value={editWeightedAt}
 						onChange={(e) => setEditWeightedAt(e.target.value)}
+						className={inputClass}
 					/>
 				) : (
 					String(item.weighted_at).slice(0, 10)
@@ -154,6 +157,7 @@ export function WeightingsPage() {
 						type="number"
 						value={editWeight ?? ""}
 						onChange={(e) => setEditWeight(Number(e.target.value))}
+						className={inputClass}
 					/>
 				) : (
 					item.weight
@@ -171,6 +175,7 @@ export function WeightingsPage() {
 					<select
 						value={animalInventoryNumber ?? ""}
 						onChange={(e) => setAnimalInventoryNumber(Number(e.target.value))}
+						className={inputClass}
 						required
 					>
 						<option value="" disabled>Выберите животное</option>
@@ -184,15 +189,17 @@ export function WeightingsPage() {
 						type="date"
 						value={weightedAt}
 						onChange={(e) => setWeightedAt(e.target.value)}
+						className={inputClass}
 						placeholder="Дата взвешивания"
 					/>
 					<input
 						type="number"
 						value={weight ?? ""}
 						onChange={(e) => setWeight(Number(e.target.value))}
+						className={inputClass}
 						placeholder="Вес, кг"
 					/>
-					<button type="submit">Создать</button>
+					<button type="submit" className={btnPrimary}>Создать</button>
 				</form>
 			}
 		>

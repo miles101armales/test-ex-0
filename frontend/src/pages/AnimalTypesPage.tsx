@@ -1,5 +1,6 @@
 import { type FormEvent, useEffect, useState } from 'react';
 import { createAnimalType, deleteAnimalType, listAnimalTypes, updateAnimalType, type AnimalType } from '../api/animalTypes';
+import { btnPrimary, inputClass } from '../App';
 import { CrudPageLayout, DataTable, RowActions, type Column } from '../components/table';
 
 export function AnimalTypesPage() {
@@ -82,6 +83,7 @@ export function AnimalTypesPage() {
 					<input
 						value={editName}
 						onChange={(e) => setEditName(e.target.value)}
+						className={inputClass}
 					/>
 				) : (
 					item.name
@@ -98,9 +100,10 @@ export function AnimalTypesPage() {
 					<input
 						value={name}
 						onChange={(e) => setName(e.target.value)}
+						className={inputClass}
 						placeholder="Название"
 					/>
-					<button type="submit">Создать</button>
+					<button type="submit" className={btnPrimary}>Создать</button>
 				</form>
 			}
 		>

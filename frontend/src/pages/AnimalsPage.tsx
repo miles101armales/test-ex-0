@@ -1,6 +1,7 @@
 import { type FormEvent, useEffect, useState } from 'react';
 import { createAnimal, deleteAnimal, listAnimals, updateAnimal, type Animal, type Sex } from '../api/animals';
 import { listBreeds, type Breed } from '../api/breeds';
+import { btnPrimary, inputClass } from '../App';
 import { CrudPageLayout, DataTable, RowActions, type Column } from '../components/table';
 
 const sexOptions: { value: Sex; label: string }[] = [
@@ -147,6 +148,7 @@ export function AnimalsPage() {
 					<select
 						value={editSex ?? ""}
 						onChange={(e) => setEditSex(e.target.value as Sex)}
+						className={inputClass}
 						required
 					>
 						<option value="" disabled>Выберите пол</option>
@@ -166,6 +168,7 @@ export function AnimalsPage() {
 					<input
 						value={editNickname}
 						onChange={(e) => setEditNickname(e.target.value)}
+						className={inputClass}
 					/>
 				) : (
 					item.nickname
@@ -180,6 +183,7 @@ export function AnimalsPage() {
 						type="date"
 						value={editArrivedAt}
 						onChange={(e) => setEditArrivedAt(e.target.value)}
+						className={inputClass}
 					/>
 				) : (
 					item.arrived_at
@@ -193,6 +197,7 @@ export function AnimalsPage() {
 					<input
 						value={editAge ?? ""}
 						onChange={(e) => setEditAge(Number(e.target.value))}
+						className={inputClass}
 					/>
 				) : (
 					item.age
@@ -206,6 +211,7 @@ export function AnimalsPage() {
 					<select
 						value={editBreedId ?? ""}
 						onChange={(e) => setEditBreedId(Number(e.target.value))}
+						className={inputClass}
 						required
 					>
 						<option value="" disabled>Выберите породу</option>
@@ -225,6 +231,7 @@ export function AnimalsPage() {
 					<input
 						value={editParent ?? ""}
 						onChange={(e) => setEditParent(e.target.value)}
+						className={inputClass}
 					/>
 				) : (
 					item.parent
@@ -241,6 +248,7 @@ export function AnimalsPage() {
 					<select
 						value={sex ?? ""}
 						onChange={(e) => setSex(e.target.value as Sex)}
+						className={inputClass}
 						required
 					>
 						<option value="" disabled>Выберите пол</option>
@@ -251,22 +259,26 @@ export function AnimalsPage() {
 					<input
 						value={nickname}
 						onChange={(e) => setNickname(e.target.value)}
+						className={inputClass}
 						placeholder="Кличка"
 					/>
 					<input
 						type="date"
 						value={arrivedAt}
 						onChange={(e) => setArrivedAt(e.target.value)}
+						className={inputClass}
 						placeholder="Дата прибытия"
 					/>
 					<input
 						value={age ?? ""}
 						onChange={(e) => setAge(Number(e.target.value))}
+						className={inputClass}
 						placeholder="Возраст"
 					/>
 					<select
 						value={breedId ?? ""}
 						onChange={(e) => setBreedId(Number(e.target.value))}
+						className={inputClass}
 						required
 					>
 						<option value="" disabled>Выберите породу</option>
@@ -277,9 +289,10 @@ export function AnimalsPage() {
 					<input
 						value={parent ?? ""}
 						onChange={(e) => setParent(e.target.value)}
+						className={inputClass}
 						placeholder="Информация о родителе"
 					/>
-					<button type="submit">Создать</button>
+					<button type="submit" className={btnPrimary}>Создать</button>
 				</form>
 			}
 		>

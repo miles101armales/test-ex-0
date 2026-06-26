@@ -1,5 +1,6 @@
 import { type FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { btnPrimary, inputClass } from '../App';
 import { register } from '../api/auth';
 
 export function RegisterPage() {
@@ -31,10 +32,10 @@ export function RegisterPage() {
 		<form onSubmit={handleSubmit}>
 			<h1>Регистрация</h1>
 			{error && <p style={{ color: "red" }}>{error}</p>}
-			<input value={loginValue} onChange={(e) => setLoginValue(e.target.value)} placeholder="login" />
-			<input value={emailValue} onChange={(e) => setEmailValue(e.target.value)} placeholder="email" />
-			<input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-			<button type="submit">Зарегистрироваться</button>
+			<input value={loginValue} onChange={(e) => setLoginValue(e.target.value)} className={inputClass} placeholder="login" />
+			<input value={emailValue} onChange={(e) => setEmailValue(e.target.value)} className={inputClass} placeholder="email" />
+			<input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className={inputClass} />
+			<button type="submit" className={btnPrimary}>Зарегистрироваться</button>
 			<Link to="/login">Войти</Link>
 		</form>
 	)

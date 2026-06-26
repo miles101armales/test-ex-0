@@ -1,6 +1,7 @@
 import { type FormEvent, useEffect, useState } from 'react';
 import { createBreed, deleteBreed, listBreeds, updateBreed, type Breed } from '../api/breeds';
 import { type AnimalType, listAnimalTypes } from '../api/animalTypes';
+import { btnPrimary, inputClass } from '../App';
 import { CrudPageLayout, DataTable, RowActions, type Column } from '../components/table';
 
 export function BreedsPage() {
@@ -101,6 +102,7 @@ export function BreedsPage() {
 					<input
 						value={editName}
 						onChange={(e) => setEditName(e.target.value)}
+						className={inputClass}
 					/>
 				) : (
 					item.name
@@ -114,6 +116,7 @@ export function BreedsPage() {
 					<select
 						value={editAnimalTypeId ?? ""}
 						onChange={(e) => setEditAnimalTypeId(Number(e.target.value))}
+						className={inputClass}
 						required
 					>
 						<option value="" disabled>Выберите тип</option>
@@ -136,11 +139,13 @@ export function BreedsPage() {
 					<input
 						value={name}
 						onChange={(e) => setName(e.target.value)}
+						className={inputClass}
 						placeholder="Название"
 					/>
 					<select
 						value={animalTypeId ?? ""}
 						onChange={(e) => setAnimalTypeId(Number(e.target.value))}
+						className={inputClass}
 						required
 					>
 						<option value="" disabled>Выберите тип</option>
@@ -148,7 +153,7 @@ export function BreedsPage() {
 							<option key={t.id} value={t.id}>{t.name}</option>
 						))}
 					</select>
-					<button type="submit">Создать</button>
+					<button type="submit" className={btnPrimary}>Создать</button>
 				</form>
 			}
 		>
