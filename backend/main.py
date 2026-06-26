@@ -1,13 +1,35 @@
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
+
+from app.database import models
+from app.database.session import Base, engine, get_db
+from app.api.routes.animal import animals_router
+from app.api.routes.animaltype import animal_types_router
+from app.api.routes.breed import breeds_router
+from app.api.routes.weighting import weightings_router
+from app.api.routes.auth import auth_router
+from app.api.routes.user import users_router
 
 app = FastAPI()
 
+Base.metadata.create_all(bind=engine)
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+app.include_router(animal_types_router)
+app.include_router(breeds_router)
+app.include_router(animals_router)
+app.include_router(weightings_router)
+app.include_router(auth_router)
+app.include_router(users_router)
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: str | None = None):
-    return {"item_id": item_id, "q": q}
+@app.get("/health/db")
+def health_db(db: Session = Depends(get_db)):
+    return {"ok": db.connection().connection.is_valid}
