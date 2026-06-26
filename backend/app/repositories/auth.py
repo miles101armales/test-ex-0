@@ -2,7 +2,7 @@ import secrets
 from sqlalchemy import or_, select
 from sqlalchemy.orm import Session
 
-from app.database.models import User
+from app.database.models import User, UserRoles
 
 def exists_user_by_login_or_email(
 	db: Session,
@@ -24,7 +24,7 @@ def register_user(
 		login=login,
 		email=email,
 		hash_password=hash_password,
-		role="user",
+		role=UserRoles.USER,
 		is_active=False,
 		is_enabled=True,
 		activation_token=activation_token

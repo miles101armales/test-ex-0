@@ -2,6 +2,11 @@ import { useEffect, useState } from "react";
 import { listUsers, setUserEnabled, type User } from "../api/users";
 import { CrudPageLayout, DataTable, type Column } from "../components/table";
 
+const roleLabels: Record<User["role"], string> = {
+	ADMIN: "Админ",
+	USER: "Пользователь",
+};
+
 export function UsersPage() {
 	const [items, setItems] = useState<User[]>([]);
 	const [error, setError] = useState("");
@@ -20,7 +25,7 @@ export function UsersPage() {
 	}
 
 	useEffect(() => {
-		load();
+		void Promise.resolve().then(load);
 	}, []);
 
 	async function toggleEnabled(user: User) {
@@ -37,7 +42,7 @@ export function UsersPage() {
 		{ id: 'id', header: 'ID', cell: (user) => user.id },
 		{ id: 'login', header: 'Login', cell: (user) => user.login },
 		{ id: 'email', header: 'Email', cell: (user) => user.email },
-		{ id: 'role', header: 'Роль', cell: (user) => user.role },
+		{ id: 'role', header: 'Роль', cell: (user) => roleLabels[user.role] },
 		{ id: 'is_active', header: 'Активен', cell: (user) => (user.is_active ? "да" : "нет") },
 		{ id: 'is_enabled', header: 'Включён', cell: (user) => (user.is_enabled ? "да" : "нет") },
 	];

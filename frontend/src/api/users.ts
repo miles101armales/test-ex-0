@@ -1,10 +1,12 @@
 import { api } from "./client";
 
+export type UserRole = "ADMIN" | "USER";
+
 export type User = {
   id: number;
   login: string;
   email: string;
-  role: string;
+  role: UserRole;
   is_active: boolean;
   is_enabled: boolean;
 };

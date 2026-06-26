@@ -1,8 +1,10 @@
 import { api } from "./client";
 
+export type Sex = "MEN" | "WOMEN";
+
 export type Animal = { 
 	inventory_number: number;
-  	sex: string;
+  	sex: Sex;
   	nickname: string,
   	arrived_at: string,
 	age: number,
@@ -11,7 +13,7 @@ export type Animal = {
 };
 
 export type AnimalUpdate = {
-	sex?: string;
+	sex?: Sex;
 	nickname?: string,
 	arrived_at?: string,
 	age?: number,
@@ -24,7 +26,7 @@ export function listAnimals() {
 }
 
 export function createAnimal(data: {
-	sex: string;
+	sex: Sex;
   	nickname: string,
   	arrived_at: string,
 	age: number,

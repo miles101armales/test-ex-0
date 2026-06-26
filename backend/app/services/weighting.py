@@ -2,13 +2,13 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.api.schemas.weighting import WeightingCreate, WeightingUpdate
-from app.database.models import User, Weighting
+from app.database.models import User, UserRoles, Weighting
 from app.repositories.weighting import create_weighting, delete_weighting, get_weighting_by_id, list_weightings, update_weighting, weighting_exists_for_animal_on_date, weighting_exists_for_animal_on_date_excluding_id
 from app.repositories.animal import get_animal_by_inventory_number
 from app.services.animal import get_animal_by_inventory_number_service
 
 def _ensure_can_access_weighting(weighting: Weighting, current_user: User) -> None:
-	if current_user.role != "admin" and weighting.user_id != current_user.id:
+	if current_user.role != UserRoles.ADMIN and weighting.user_id != current_user.id:
 		raise HTTPException(
 			status_code=status.HTTP_403_FORBIDDEN,
 			detail="Нет доступа к этой записи"
@@ -43,7 +43,7 @@ def create_weighting_service(
 	)
 
 def list_weightings_service(db: Session, current_user: User) -> list[Weighting]:
-	if current_user.role == "admin":
+	if current_user.role == UserRoles.ADMIN:
 		return list_weightings(db)
 	return list_weightings(db, user_id=current_user.id)
 

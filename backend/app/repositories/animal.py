@@ -2,12 +2,12 @@ from datetime import date
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.database.models import Animal
+from app.database.models import Animal, SexEnum
 
 
 def create_animal(
 	db: Session,
-	sex: str,
+	sex: SexEnum,
 	nickname: str,
 	arrived_at: date,
 	age: int,

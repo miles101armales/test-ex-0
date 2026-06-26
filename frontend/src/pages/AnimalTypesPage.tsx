@@ -23,7 +23,7 @@ export function AnimalTypesPage() {
 	}
 
 	useEffect(() => {
-		 load();
+		 void Promise.resolve().then(load);
 	}, []);
 
 	async function handleCreate(event: FormEvent<HTMLFormElement>) {

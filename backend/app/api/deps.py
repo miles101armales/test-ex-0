@@ -6,7 +6,7 @@ from jose import JWTError, jwt
 from app.core.security import ALGORITHM, SECRET_KEY
 from app.database.session import get_db
 from app.repositories.user import get_user_by_login
-from app.database.models import User
+from app.database.models import User, UserRoles
 
 
 http_bearer = HTTPBearer()
@@ -54,7 +54,7 @@ def get_current_user(
 def get_current_admin(
 	user: User = Depends(get_current_user)
 ) -> User:
-	if user.role != "admin":
+	if user.role != UserRoles.ADMIN:
 		raise HTTPException(
 			status_code=status.HTTP_403_FORBIDDEN,
 			detail="Доступ только для администратора"

@@ -1,9 +1,11 @@
 from datetime import date
 from pydantic import BaseModel
 
+from app.database.models import SexEnum
+
 
 class AnimalCreate(BaseModel):
-	sex: str
+	sex: SexEnum
 	nickname: str
 	arrived_at: date
 	age: int
@@ -11,7 +13,7 @@ class AnimalCreate(BaseModel):
 	parent: str | None
 
 class AnimalUpdate(BaseModel):
-	sex: str | None = None
+	sex: SexEnum | None = None
 	nickname: str | None = None
 	arrived_at: date | None = None
 	age: int | None = None
@@ -20,7 +22,7 @@ class AnimalUpdate(BaseModel):
 
 class AnimalRead(BaseModel):
 	inventory_number: int
-	sex: str
+	sex: SexEnum
 	nickname: str
 	arrived_at: date
 	age: int

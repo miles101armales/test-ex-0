@@ -35,7 +35,7 @@ export function WeightingsPage() {
 	}
 
 	useEffect(() => {
-		 load();
+		 void Promise.resolve().then(load);
 	}, []);
 
 	useEffect(() => {

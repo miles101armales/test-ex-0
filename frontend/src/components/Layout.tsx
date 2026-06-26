@@ -10,7 +10,7 @@ export function Layout() {
 
 	useEffect(() => {
 	getMe()
-		.then((me) => setIsAdmin(me.role === "admin"))
+		.then((me) => setIsAdmin(me.role === "ADMIN"))
 		.catch(() => setIsAdmin(false));
 	}, []);
 

@@ -1,8 +1,9 @@
 import { api } from './client';
+import type { UserRole } from './users';
 
 export type LoginResponse = { access_token: string; token_type: string };
 export type RegisterResponse = { message: string }
-export type MeResponse = { login: string; role: string };
+export type MeResponse = { login: string; role: UserRole };
 
 export function login(login: string, password: string) {
 	return api<LoginResponse>("/auth/login", {

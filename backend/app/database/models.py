@@ -1,9 +1,18 @@
+from enum import Enum
+
 from sqlalchemy import Boolean, Date, ForeignKey, Integer, String
+from sqlalchemy import Enum as SqlEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .session import Base
 
-# TODO: завести Enum для role: ADMIN и USER
+class UserRoles(str, Enum):
+	ADMIN = "ADMIN"
+	USER = "USER"
+
+class SexEnum(str, Enum):
+	MEN = "MEN"
+	WOMEN = "WOMEN"
 
 class AnimalType(Base):
 	__tablename__ = "animaltype"
@@ -27,7 +36,7 @@ class Animal(Base):
 	__tablename__ = "animal"
 
 	inventory_number: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-	sex: Mapped[str] = mapped_column(String, nullable=False)
+	sex: Mapped[SexEnum] = mapped_column(SqlEnum(SexEnum), nullable=False)
 	nickname: Mapped[str] = mapped_column(String, nullable=False)
 	arrived_at: Mapped[Date] = mapped_column(Date, nullable=False)
 	age: Mapped[int] = mapped_column(Integer, nullable=False)
@@ -56,7 +65,7 @@ class User(Base):
 	login: Mapped[str] = mapped_column(String, unique=True, nullable=False)
 	email: Mapped[str] = mapped_column(String, unique=True, nullable=False)
 	hash_password: Mapped[str] = mapped_column(String, nullable=False)
-	role: Mapped[str] = mapped_column(String, default="user")
+	role: Mapped[UserRoles] = mapped_column(SqlEnum(UserRoles), default=UserRoles.USER)
 	is_active: Mapped[bool] = mapped_column(Boolean, default=False)
 	is_enabled: Mapped[bool] = mapped_column(Boolean, default=True)
 	activation_token: Mapped[str | None] = mapped_column(String, nullable=True)

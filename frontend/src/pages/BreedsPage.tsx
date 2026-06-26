@@ -27,7 +27,7 @@ export function BreedsPage() {
 	}
 
 	useEffect(() => {
-		 load();
+		 void Promise.resolve().then(load);
 	}, []);
 
 	useEffect(() => {

@@ -1,11 +1,21 @@
 import { type FormEvent, useEffect, useState } from 'react';
-import { createAnimal, deleteAnimal, listAnimals, updateAnimal, type Animal } from '../api/animals';
+import { createAnimal, deleteAnimal, listAnimals, updateAnimal, type Animal, type Sex } from '../api/animals';
 import { listBreeds, type Breed } from '../api/breeds';
 import { CrudPageLayout, DataTable, RowActions, type Column } from '../components/table';
 
+const sexOptions: { value: Sex; label: string }[] = [
+	{ value: "MEN", label: "Мужской" },
+	{ value: "WOMEN", label: "Женский" },
+];
+
+const sexLabels: Record<Sex, string> = {
+	MEN: "Мужской",
+	WOMEN: "Женский",
+};
+
 export function AnimalsPage() {
 	const [items, setItems] = useState<Animal[]>([]);
-	const [sex, setSex] = useState("");
+	const [sex, setSex] = useState<Sex | null>(null);
 	const [nickname, setNickname] = useState("");
 	const [arrivedAt, setArrivedAt] = useState("");
 	const [age, setAge] = useState<number | null>(null);
@@ -13,7 +23,7 @@ export function AnimalsPage() {
 	const [breedId, setBreedId] = useState<number | null>(null);
 	const [parent, setParent] = useState<string | null>(null);
 	const [editingInventoryNumber, setEditingInventoryNumber] = useState<number | null>(null);
-	const [editSex, setEditSex] = useState("");
+	const [editSex, setEditSex] = useState<Sex | null>(null);
 	const [editNickname, setEditNickname] = useState("");
 	const [editArrivedAt, setEditArrivedAt] = useState("");
 	const [editAge, setEditAge] = useState<number | null>(null);
@@ -35,7 +45,7 @@ export function AnimalsPage() {
 	}
 
 	useEffect(() => {
-		 load();
+		 void Promise.resolve().then(load);
 	}, []);
 
 	useEffect(() => {
@@ -44,7 +54,7 @@ export function AnimalsPage() {
 
 	async function handleCreate(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
-		if (!sex.trim() ||
+		if (!sex ||
 		!nickname.trim() ||
 		!arrivedAt ||
 		(!age || age == null) ||
@@ -53,14 +63,14 @@ export function AnimalsPage() {
 		setError("");
 		try {
 			await createAnimal({
-				sex: sex.trim(),
+				sex,
 				nickname: nickname.trim(),
 				arrived_at: arrivedAt,
 				age: age,
 				breed_id: breedId,
 				parent: parent?.trim() || undefined
 			});
-			setSex("");
+			setSex(null);
 			setNickname("");
 			setArrivedAt("");
 			setAge(null);
@@ -84,7 +94,7 @@ export function AnimalsPage() {
 
 	function cancelEdit() {
 		setEditingInventoryNumber(null);
-		setEditSex("");
+		setEditSex(null);
 		setEditNickname("");
 		setEditArrivedAt("");
 		setEditAge(null);
@@ -102,7 +112,7 @@ export function AnimalsPage() {
 		setError("");
 		try {
 			await updateAnimal(inventory_number, {
-				sex: editSex.trim(),
+				sex: editSex,
 				nickname: editNickname.trim(),
 				arrived_at: editArrivedAt,
 				age: editAge,
@@ -134,12 +144,18 @@ export function AnimalsPage() {
 			header: 'Пол',
 			cell: (item, { isEditing }) =>
 				isEditing ? (
-					<input
-						value={editSex}
-						onChange={(e) => setEditSex(e.target.value)}
-					/>
+					<select
+						value={editSex ?? ""}
+						onChange={(e) => setEditSex(e.target.value as Sex)}
+						required
+					>
+						<option value="" disabled>Выберите пол</option>
+						{sexOptions.map((option) => (
+							<option key={option.value} value={option.value}>{option.label}</option>
+						))}
+					</select>
 				) : (
-					item.sex
+					sexLabels[item.sex]
 				),
 		},
 		{
@@ -222,11 +238,16 @@ export function AnimalsPage() {
 			error={error}
 			form={
 				<form onSubmit={handleCreate}>
-					<input
-						value={sex}
-						onChange={(e) => setSex(e.target.value)}
-						placeholder="Пол"
-					/>
+					<select
+						value={sex ?? ""}
+						onChange={(e) => setSex(e.target.value as Sex)}
+						required
+					>
+						<option value="" disabled>Выберите пол</option>
+						{sexOptions.map((option) => (
+							<option key={option.value} value={option.value}>{option.label}</option>
+						))}
+					</select>
 					<input
 						value={nickname}
 						onChange={(e) => setNickname(e.target.value)}
